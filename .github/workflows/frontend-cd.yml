@@ -28,4 +28,4 @@ jobs:
         VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       run: |
         npm install -g vercel
-        vercel --prod --token=$VERCEL_TOKEN
+        vercel --prod --token=$VERCEL_TOKEN --confirm --scope="Faith's projects" --project=farmmart
