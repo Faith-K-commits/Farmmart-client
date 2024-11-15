@@ -67,3 +67,28 @@ export const addToCart = async (animalId, quantity) => {
   }
   return await response.json();
 };
+
+// Fetch categories
+export const getCategories = async () => {
+  const response = await fetch(`${BASE_URL}/categories`);
+  if (!response.ok) throw new Error("Failed to fetch categories");
+  return await response.json();
+};
+
+// Fetch breeds
+export const getBreeds = async () => {
+  const response = await fetch(`${BASE_URL}/breeds`);
+  if (!response.ok) throw new Error("Failed to fetch breeds");
+  return await response.json();
+};
+
+// Fetch similar animals by vendor ID
+export const getSimilarAnimals = async (vendorId) => {
+  const response = await fetch(
+    `${BASE_URL}/animals/similar?vendor_id=${vendorId}`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch similar animals");
+  }
+  return await response.json();
+};

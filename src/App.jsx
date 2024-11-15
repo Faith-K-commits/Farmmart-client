@@ -17,7 +17,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AnimalsPage />} />
+        <Route path="/animals" element={<AnimalsPage />} />
         <Route path="/animal/:id" element={<AnimalDetailsPage />} />
       </Routes>
     </Router>

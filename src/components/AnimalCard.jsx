@@ -11,18 +11,16 @@ const AnimalCard = ({ animal }) => {
   return (
     <div
       onClick={handleClick}
-      className="border p-4 rounded-lg shadow hover:shadow-lg transition duration-200 cursor-pointer"
+      className="border p-4 rounded-lg shadow hover:shadow-lg transition duration-200 cursor-pointer w-60"
     >
       <img
         src={animal.image_url}
         alt={animal.name}
-        className="w-full h-40 object-cover rounded-md mb-4"
+        className="w-full h-32 object-cover rounded-md mb-2"
       />
-      <h3 className="text-xl font-semibold">{animal.name}</h3>
-      <p className="text-gray-700">Category: {animal.category}</p>
+      <h3 className="text-lg font-semibold">{animal.name}</h3>
       <p className="text-gray-700">Breed: {animal.breed}</p>
-      <p className="text-gray-700">Price: Ksh.{animal.price}</p>
-      <p className="text-gray-500 text-sm">Age: {animal.age} years</p>
+      <p className="text-green-600 font-bold">Ksh.{animal.price}</p>
     </div>
   );
 };
