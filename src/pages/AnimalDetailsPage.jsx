@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getAnimalDetails, addToCart } from "../api/animalsApi";
 
-const AnimalDetailsPage = () => {
+function AnimalDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [animal, setAnimal] = useState(null);
@@ -37,7 +37,7 @@ const AnimalDetailsPage = () => {
   if (!animal) return <p>Loading...</p>;
 
   return (
-    <div className="animal-details-page p-8 bg-gray-100 flex flex-col md:flex-row items-start space-x-8">
+    <div className="animal-details-page p-8 bg-gray-100 flex flex-co md:flex-row items-start space-x-8">
       {/* Animal Image */}
       <div className="animal-image flex-shrink-0">
         <img
@@ -52,6 +52,8 @@ const AnimalDetailsPage = () => {
         <h1 className="text-3xl font-bold mb-2">{animal.name}</h1>
         <p className="text-lg text-gray-700">Vendor: {animal.vendor_name}</p>
         <p className="text-lg text-gray-700">Farm: {animal.farm_name}</p>
+        <p className="text-lg text-gray-700">Phone: {animal.phone_number}</p>
+        <p className="text-lg text-gray-700">Email: {animal.email}</p>
         <p className="text-2xl font-semibold text-green-600 mt-2">
           Ksh.{animal.price}
         </p>
@@ -61,7 +63,7 @@ const AnimalDetailsPage = () => {
         <div className="actions flex space-x-4 mt-6">
           <button
             onClick={handleBackClick}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-orange-300"
           >
             ← Back
           </button>
@@ -75,6 +77,6 @@ const AnimalDetailsPage = () => {
       </div>
     </div>
   );
-};
+}
 
 export default AnimalDetailsPage;

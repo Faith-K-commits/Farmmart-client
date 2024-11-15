@@ -8,7 +8,7 @@ import {
   getBreeds,
 } from "../api/animalsApi";
 
-const AnimalsPage = () => {
+function AnimalsPage() {
   const [animals, setAnimals] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -68,19 +68,15 @@ const AnimalsPage = () => {
   return (
     <div className="flex p-6">
       {/* Sidebar Filter Section */}
-      <div className="w-1/4 pr-6">
+      <div className="w-1/4 pr-6 ">
         <div className="sticky top-6">
-          <h1 className="text-2xl font-bold mb-4">Animals</h1>
-          <h2 className="text-xl font-bold mb-4">Filters</h2>
-
-          {/* Category Dropdown */}
+          <h1 className="text-2xl text-orange-400 font-bold mb-4">Animals</h1>
           <div className="mb-4">
-            <label className="block mb-1">Category</label>
             <input
               list="categoryOptions"
               type="text"
               name="category"
-              placeholder="Category"
+              placeholder="Search category..."
               value={filters.category}
               onChange={handleFilterChange}
               className="border p-2 rounded w-auto"
@@ -91,29 +87,69 @@ const AnimalsPage = () => {
               ))}
             </datalist>
           </div>
+          <div className="mb-5">
+            <input
+              list="breedOptions"
+              type="text"
+              name="breed"
+              placeholder="Search breed..."
+              value={filters.breed}
+              onChange={handleFilterChange}
+              className="border p-2 rounded w-auto"
+            />
+            <datalist id="categoryOptions">
+              {categories.map((breed, idx) => (
+                <option key={idx} value={breed} />
+              ))}
+            </datalist>
+          </div>
+          <h2 className="text-xl font-bold mb-4">#Filters</h2>
+
+          {/* Category Dropdown */}
+          <div className="mb-4">
+            <label className="block mb-1">Category</label>
+            <select
+              name="category"
+              placeholder="Category"
+              value={filters.category}
+              onChange={handleFilterChange}
+              className="border p-2 rounded w-auto"
+            >
+              <option value="">All</option>
+              <datalist id="categoryOptions">
+                {categories.map((category, idx) => (
+                  <option key={idx} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </datalist>
+            </select>
+          </div>
 
           {/* Breed Dropdown */}
           <div className="mb-4">
             <label className="block mb-1">Breed</label>
-            <input
-              list="breedOptions"
-              type="text"
+            <select
               name="breed"
               placeholder="Breed"
               value={filters.breed}
               onChange={handleFilterChange}
               className="border p-2 rounded w-auto"
-            />
-            <datalist id="breedOptions">
-              {breeds.map((breed, idx) => (
-                <option key={idx} value={breed} />
-              ))}
-            </datalist>
+            >
+              <option value="">All</option>
+              <datalist id="breedOptions">
+                {breeds.map((breed, idx) => (
+                  <option key={idx} value={breed}>
+                    {breed}
+                  </option>
+                ))}
+              </datalist>
+            </select>
           </div>
 
           {/* Min Age Field */}
           <div className="mb-4">
-            <label className="block mb-1">Min Age</label>
+            <label className="block mb-1">Minimum Age</label>
             <input
               type="number"
               name="ageMin"
@@ -133,7 +169,7 @@ const AnimalsPage = () => {
 
           {/* Max Age Field */}
           <div className="mb-4">
-            <label className="block mb-1">Max Age</label>
+            <label className="block mb-1">Maximum Age</label>
             <input
               type="number"
               name="ageMax"
@@ -154,7 +190,7 @@ const AnimalsPage = () => {
       </div>
 
       {/* Animals List Section */}
-      <div className="w-3/4">
+      <div className="w-3/4 ">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {animals.map((animal) => (
             <AnimalCard key={animal.id} animal={animal} />
@@ -170,6 +206,6 @@ const AnimalsPage = () => {
       </div>
     </div>
   );
-};
+}
 
 export default AnimalsPage;
