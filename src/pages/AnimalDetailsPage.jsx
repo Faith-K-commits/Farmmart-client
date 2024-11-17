@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getAnimalDetails, addToCart } from "../api/animalsApi";
+import { getAnimalDetails, addToCart, removeFromCart } from "../api/animalsApi";
+import { toast } from "react-toastify";
 
 function AnimalDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [animal, setAnimal] = useState(null);
+  const [availableQuantity, setAvailableQuantity] = useState(0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -13,6 +15,7 @@ function AnimalDetailsPage() {
       try {
         const data = await getAnimalDetails(id);
         setAnimal(data);
+        setAvailableQuantity(data.available_quantity);
       } catch (error) {
         setError("Failed to load animal details");
       }
@@ -21,11 +24,84 @@ function AnimalDetailsPage() {
   }, [id]);
 
   const handleAddToCart = async () => {
+    if (availableQuantity === 0) {
+      toast.error("Sorry, this animal is currently out of stock.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+    setAvailableQuantity((prevQuantity) => prevQuantity - 1);
+
     try {
       await addToCart(animal.id, 1);
-      alert("Animal added to cart successfully!");
+      // setAvailableQuantity((prevQuantity) => prevQuantity - 1);
+      toast.success("Animal added to cart successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      alert("Failed to add animal to cart.");
+      setAvailableQuantity((prevQuantity) => prevQuantity + 1);
+      toast.error("Failed to add animal to cart.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  const handleRemoveFromCart = async () => {
+    try {
+      const response = await removeFromCart(animal.id);
+      console.log("Remove from cart response:", response);
+      if (response.success) {
+        setAvailableQuantity((prevQuantity) => prevQuantity + 1);
+        toast.success("Animal removed from cart successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        console.error("Error removing from cart:", response.error);
+        toast.error("Failed to remove animal from cart.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      console.error("Error removing from cart:", error);
+      toast.error("Failed to remove animal from cart.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -54,9 +130,14 @@ function AnimalDetailsPage() {
         <p className="text-lg text-gray-700">Farm: {animal.farm_name}</p>
         <p className="text-lg text-gray-700">Phone: {animal.phone_number}</p>
         <p className="text-lg text-gray-700">Email: {animal.email}</p>
-        <p className="text-2xl font-semibold text-green-600 mt-2">
-          Ksh.{animal.price}
-        </p>
+        <div className="actions flex space-x-4 mt-6">
+          <p className="text-2xl font-semibold text-green-600 mt-2">
+            Ksh.{animal.price}
+          </p>
+          <p className="text-2xl font-semibold text-gray-600 mt-2">
+            Available Quantity: {animal.available_quantity}
+          </p>
+        </div>
         <p className="text-gray-600 my-4">{animal.description}</p>
 
         {/* Actions */}
@@ -72,6 +153,12 @@ function AnimalDetailsPage() {
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
             Add to Cart
+          </button>
+          <button
+            onClick={handleRemoveFromCart}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Remove from Cart
           </button>
         </div>
       </div>

@@ -67,10 +67,11 @@ function AnimalsPage() {
 
   return (
     <div className="flex p-6">
-      {/* Sidebar Filter Section */}
+      {/* Sidebar Search and Filter Section */}
       <div className="w-1/4 pr-6 ">
         <div className="sticky top-6">
           <h1 className="text-2xl text-orange-400 font-bold mb-4">Animals</h1>
+          <h2 className="text-xl font-bold mb-4">Search</h2>
           <div className="mb-4">
             <input
               list="categoryOptions"

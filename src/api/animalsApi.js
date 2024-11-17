@@ -92,3 +92,26 @@ export const getSimilarAnimals = async (vendorId) => {
   }
   return await response.json();
 };
+
+// Remove one quantity of animal from cart
+export const removeFromCart = async (animalId) => {
+  const response = await fetch(`${BASE_URL}/cart/1/items/${animalId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ quantity: -1 }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.statusText}`);
+  }
+
+  try {
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error parsing response as JSON:", error);
+    throw new Error("Failed to remove from cart");
+  }
+};
