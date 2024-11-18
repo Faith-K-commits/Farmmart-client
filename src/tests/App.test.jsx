@@ -6,6 +6,6 @@ import App from '../App';
 
 test('renders the App component', () => {
   render(<App />);
-  // const headingElement = screen.getByText(/Test Continuous Integration/i);
-  // expect(headingElement).toBeInTheDocument();
+  const headingElement = screen.getByText(/Test Continuous Integration/i);
+  expect(headingElement).toBeInTheDocument();
 });
