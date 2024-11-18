@@ -1,38 +1,38 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../components/UseAuth";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useAuth } from "../components/UseAuth"; // Import the custom hook
 
-const Login = () => {
+const VendorLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const { login } = useAuth(); // Access login function from useAuth
-  const navigate = useNavigate();
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
+  const { login } = useAuth(); // Destructure login from useAuth
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    setMessage("");
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/login", {
+      const response = await fetch("http://localhost:5000/vendor/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        login(data.token, data.role); // Pass both token and role to the login function
-        navigate("/"); // Redirect to home after successful login
+        login(data.token, "vendor"); // Store token and role in auth
+        localStorage.setItem("vendorName", data.name);
+        alert("Login successful!");
+        navigate("/vendordashboard"); // Redirect to VendorDashboard
       } else {
-        setError(data.error || "Invalid login credentials.");
+        setMessage(data.error || "Login failed. Please try again.");
       }
-    } catch (err) {
-      setError("Network error. Please try again.");
+    } catch (error) {
+      console.error("Login error:", error);
+      setMessage("An error occurred. Please try again.");
     }
   };
 
@@ -40,9 +40,9 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold text-center text-orange-500 mb-6">
-          Login
+          Vendor Login
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium mb-2">
               Email:
@@ -73,25 +73,13 @@ const Login = () => {
           >
             Login
           </button>
-          <p className="text-center text-sm text-gray-600">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-orange-500 hover:underline">
-              Sign up here
-            </Link>
-          </p>
-          <p className="text-center text-sm text-gray-600">
-            Looking to sell?{" "}
-            <Link to="/VendorLogin" className="text-orange-500 hover:underline">
-              Sign in here
-            </Link>
-          </p>
         </form>
-        {error && (
-          <p className="mt-4 text-center text-red-500 font-medium">{error}</p>
+        {message && (
+          <p className="mt-4 text-center text-red-500 font-medium">{message}</p>
         )}
       </div>
     </div>
   );
 };
 
-export default Login;
+export default VendorLogin;

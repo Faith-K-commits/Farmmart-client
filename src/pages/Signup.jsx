@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '', // Add confirmPassword field
-    role: 'customer', // Default role to customer
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "", // Add confirmPassword field
+    role: "customer", // Default role to customer
   });
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate(); // Initialize navigate
 
   // Handle input changes
@@ -25,20 +25,20 @@ const Signup = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Clear previous error messages
-    setMessage(''); // Clear previous success messages
+    setError(""); // Clear previous error messages
+    setMessage(""); // Clear previous success messages
 
     // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
+      setError("Passwords do not match.");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:5000/register', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: formData.name,
@@ -52,22 +52,26 @@ const Signup = () => {
 
       if (response.ok) {
         setMessage(data.message);
-        navigate('/'); // Redirect to home page upon successful signup
+        navigate("/"); // Redirect to home page upon successful signup
       } else {
-        setError(data.error || 'An error occurred during registration.');
+        setError(data.error || "An error occurred during registration.");
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError("Network error. Please try again.");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-center text-orange-500 mb-6">Signup</h2>
+        <h2 className="text-2xl font-bold text-center text-orange-500 mb-6">
+          Signup
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Name:</label>
+            <label className="block text-gray-700 font-medium mb-2">
+              Name:
+            </label>
             <input
               type="text"
               name="name"
@@ -78,7 +82,9 @@ const Signup = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Email:</label>
+            <label className="block text-gray-700 font-medium mb-2">
+              Email:
+            </label>
             <input
               type="email"
               name="email"
@@ -89,7 +95,9 @@ const Signup = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Password:</label>
+            <label className="block text-gray-700 font-medium mb-2">
+              Password:
+            </label>
             <input
               type="password"
               name="password"
@@ -100,7 +108,9 @@ const Signup = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Confirm Password:</label>
+            <label className="block text-gray-700 font-medium mb-2">
+              Confirm Password:
+            </label>
             <input
               type="password"
               name="confirmPassword"
@@ -117,14 +127,25 @@ const Signup = () => {
             Register
           </button>
           <p className="text-center text-sm text-gray-600">
-            Have an account?{' '}
+            Have an account?{" "}
             <Link to="/login" className="text-orange-500 hover:underline">
               Sign in here
             </Link>
           </p>
+          <p className="text-center text-sm text-gray-600">
+            Looking to sell?{" "}
+            <Link
+              to="/VendorSignup"
+              className="text-orange-500 hover:underline"
+            >
+              Register here
+            </Link>
+          </p>
         </form>
         {message && (
-          <p className="mt-4 text-center text-green-500 font-medium">{message}</p>
+          <p className="mt-4 text-center text-green-500 font-medium">
+            {message}
+          </p>
         )}
         {error && (
           <p className="mt-4 text-center text-red-500 font-medium">{error}</p>

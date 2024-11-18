@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import farmmartLogo from '../assets/farmmart.png';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import farmmartLogo from "../assets/farmmart.png";
 
 const Navbar = ({ isLoggedIn, role, handleLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,7 +34,7 @@ const Navbar = ({ isLoggedIn, role, handleLogout }) => {
       {/* Menu Items */}
       <ul
         className={`${
-          isMenuOpen ? 'block' : 'hidden'
+          isMenuOpen ? "block" : "hidden"
         } absolute top-16 left-0 w-full bg-orange-500 md:flex md:static md:w-auto md:space-x-4 items-center`}
       >
         {isLoggedIn && (
@@ -44,15 +44,29 @@ const Navbar = ({ isLoggedIn, role, handleLogout }) => {
                 Home
               </Link>
             </li>
-            {role === 'admin' && (
+            <li className="text-center">
+              <Link
+                to="/vendordashboard"
+                className="block text-white hover:underline"
+              >
+                Vendor Dashboard
+              </Link>
+            </li>
+            {role === "admin" && (
               <>
                 <li className="text-center">
-                  <Link to="/users" className="block text-white hover:underline">
+                  <Link
+                    to="/users"
+                    className="block text-white hover:underline"
+                  >
                     Users
                   </Link>
                 </li>
                 <li className="text-center">
-                  <Link to="/vendors" className="block text-white hover:underline">
+                  <Link
+                    to="/vendors"
+                    className="block text-white hover:underline"
+                  >
                     Vendors
                   </Link>
                 </li>
@@ -69,7 +83,7 @@ const Navbar = ({ isLoggedIn, role, handleLogout }) => {
           <li className="text-center">
             <button
               onClick={handleLogout}
-              className="block bg-white text-green-500 px-3 py-1 rounded hover:bg-green-100"
+              className="block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-100 hover:text-green-500 "
             >
               Logout
             </button>
