@@ -44,6 +44,11 @@ const Navbar = ({ isLoggedIn, role, handleLogout }) => {
                 Home
               </Link>
             </li>
+            <li className="text-center">
+              <Link to="/vendordashboard" className="block text-white hover:underline">
+                Vendor Dashboard
+              </Link>
+            </li>
             {role === 'admin' && (
               <>
                 <li className="text-center">
@@ -69,7 +74,7 @@ const Navbar = ({ isLoggedIn, role, handleLogout }) => {
           <li className="text-center">
             <button
               onClick={handleLogout}
-              className="block bg-white text-green-500 px-3 py-1 rounded hover:bg-green-100"
+              className="block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-100 hover:text-green-500 "
             >
               Logout
             </button>

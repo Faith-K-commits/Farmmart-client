@@ -122,6 +122,12 @@ const Signup = () => {
               Sign in here
             </Link>
           </p>
+          <p className="text-center text-sm text-gray-600">
+            Looking to sell?{' '}
+            <Link to="/VendorSignup" className="text-orange-500 hover:underline">
+              Register here
+            </Link>
+          </p>
         </form>
         {message && (
           <p className="mt-4 text-center text-green-500 font-medium">{message}</p>

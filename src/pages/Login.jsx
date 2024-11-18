@@ -73,6 +73,12 @@ const Login = () => {
               Sign up here
             </Link>
           </p>
+          <p className="text-center text-sm text-gray-600">
+            Looking to sell?{' '}
+            <Link to="/VendorLogin" className="text-orange-500 hover:underline">
+              Sign in here
+            </Link>
+          </p>
         </form>
         {error && (
           <p className="mt-4 text-center text-red-500 font-medium">{error}</p>
