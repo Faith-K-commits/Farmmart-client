@@ -113,7 +113,7 @@ const Home = () => {
           Featured Animals
         </h2>
         <div
-          className={`flex overflow-x-auto space-x-4 transition-all duration-500 ${
+          className={`flex overflow-x-auto space-x-4 transition-all duration-40000 ${
             refreshAnimation
               ? "opacity-100 translate-y-0"
               : "opacity-0 -translate-y-4"
@@ -130,7 +130,7 @@ const Home = () => {
                   alt={animal.name}
                   className="w-full h-32 object-cover rounded-md mb-2"
                 />
-                <h3 className="text-lg font-semibold">{animal.name}</h3>
+                <h2 className="text-lg font-semibold">{animal.name}</h2>
                 <p className="text-gray-700">{animal.description}</p>
                 <button
                   onClick={() => navigate(`/animal/${animal.id}`)}
