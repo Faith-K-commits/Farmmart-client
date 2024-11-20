@@ -51,8 +51,8 @@ const VendorPage = () => {
       {error && <p className="error-message">{error}</p>}
       {!error && vendors.length > 0 ? (
         <>
-          <table>
-            <thead>
+          <table className="min-w-full table-auto bg-white border border-gray-300 rounded-lg shadow-lg">
+            <thead className="bg-gray-100">
               <tr>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ID</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Name</th>
@@ -74,13 +74,13 @@ const VendorPage = () => {
             </tbody>
           </table>
           <div className="pagination-controls">
-            <button onClick={handlePrevPage} disabled={!pagination.has_prev}>
+            <button onClick={handlePrevPage} disabled={!pagination.has_prev} className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 disabled:opacity-50">
               Previous
             </button>
-            <span>
+            <span className="text-sm font-medium">
               Page {pagination.current_page} of {pagination.total_pages}
             </span>
-            <button onClick={handleNextPage} disabled={!pagination.has_next}>
+            <button onClick={handleNextPage} disabled={!pagination.has_next} className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 disabled:opacity-50">
               Next
             </button>
           </div>

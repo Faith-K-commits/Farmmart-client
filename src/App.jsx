@@ -1,46 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
-import AppRoutes from './components/Routes';
-import Navbar from './components/Navbar';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, useNavigate } from "react-router-dom"; 
+import Navbar from "./components/Navbar";
+import AppRoutes from "./components/Routes";
+import { useAuth } from "./components/UseAuth";
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [role, setRole] = useState(null); // New state for user role
+const AppWrapper = () => {
+  const { auth, login, logout } = useAuth(); // Using the useAuth hook for login/logout functionality
+  const [loading, setLoading] = useState(true); // State for loading
+
   const navigate = useNavigate();
 
-  // Check if user is already logged in by checking a token or session
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userRole = localStorage.getItem('role'); // Assuming role is stored in localStorage
-    if (token && userRole) {
-      setIsLoggedIn(true);
-      setRole(userRole);
-    }
-  }, []);
-
-  // Handle logout function
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    setIsLoggedIn(false);
-    setRole(null);
-    navigate('/login'); // Redirect to login page
+    logout(); // Use logout function from the useAuth hook
+    navigate("/login");
   };
+
+  useEffect(() => {
+    if (auth && auth.token) {
+      // If token is present, decode and set role
+      const decodedToken = JSON.parse(atob(auth.token.split(".")[1]));
+      // Check if the token is valid or expired
+      if (decodedToken.exp * 1000 < Date.now()) {
+        logout(); // Logout if the token is expired
+      } else {
+        setLoading(false);
+      }
+    } else {
+      setLoading(false);
+    }
+  }, [auth, logout]); // Ensure this effect runs when the auth object changes
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading spinner while processing
+  }
 
   return (
     <div>
-      <header>
-      <Navbar isLoggedIn={isLoggedIn} role={role} handleLogout={handleLogout} />
-      </header>
-      <AppRoutes isLoggedIn={isLoggedIn} role={role} setIsLoggedIn={setIsLoggedIn} />
+      <Navbar isLoggedIn={!!auth} role={auth?.role} handleLogout={handleLogout} />
+      <AppRoutes isLoggedIn={!!auth} role={auth?.role} />
     </div>
   );
-}
+};
 
-export default function AppWrapper() {
+const App = () => {
   return (
     <Router>
-      <App />
+      <AppWrapper />
     </Router>
   );
-}
+};
+
+export default App;
