@@ -12,7 +12,7 @@ const EditProfilePage = () => {
 
   // Fetch the current user details (assuming the API endpoint provides this)
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/current-user", {
+    fetch("https://farmmart-tvco.onrender.com/current-user", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`, // Include JWT token
