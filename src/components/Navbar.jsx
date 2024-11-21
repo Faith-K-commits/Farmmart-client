@@ -84,7 +84,7 @@ const Navbar = () => {
               <>
                 <li>
                   <Link to="/admin/dashboard" className="text-white">
-                   Dashboard
+                    Dashboard
                   </Link>
                 </li>
                 <li>

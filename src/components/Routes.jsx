@@ -1,14 +1,25 @@
 import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import { useAuth } from "./UseAuth"; // Custom hook for authentication
+
+// Page Components
+import VendorDashboard from "../pages/vendordashboard";
 import Home from "../pages/Home";
 import AdminDashboard from "../pages/Admindashboard";
 import AnimalsPage from "../pages/AnimalsPage";
+import AnimalDetailsPage from "../pages/AnimalDetailsPage";
 import Cart from "../pages/CartPage";
 import UserTable from "../pages/Users";
 import Login from "../pages/Login";
 import CustomerRegister from "../pages/CustomerReg";
 import VendorRegister from "../pages/VendorReg";
 import EditProfile from "../pages/EditProfile"; // Add the profile page
-import VendorDashboard from "../pages/Vendordashboard";
+
 const ProtectedRoute = ({ children, role }) => {
   const { auth } = useAuth();
 
