@@ -1,4 +1,4 @@
-const BASE_URL = "https://farmmart-tvco.onrender.com";
+const BASE_URL = "https://farmmart-tvco.onrender.com"; // Adjust this as needed for your backend
 
 // Fetch animals using the /animals/search endpoint for category and breed search
 export const searchAnimals = async (
@@ -53,19 +53,34 @@ export const getAnimalDetails = async (id) => {
 };
 
 // Add animal to cart
-export const addToCart = async (animalId, quantity) => {
-  const response = await fetch(`${BASE_URL}/cart/1/items`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ animal_id: animalId, quantity }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error: ${response.statusText}`);
+export const addToCart = async (userId, animalId, quantity) => {
+  if (!animalId || quantity <= 0) {
+    throw new Error("Invalid animal ID or quantity");
   }
-  return await response.json();
+
+  try {
+    const response = await fetch(`${BASE_URL}/cart/${userId}/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authentication
+      },
+      body: JSON.stringify({ animal_id: animalId, quantity }),
+    });
+
+    if (!response.ok) {
+      const errorDetails = await response.json();
+      throw new Error(
+        errorDetails.message ||
+          `Failed to add item to cart: ${response.statusText}`
+      );
+    }
+
+    return await response.json(); // Return the response data for further use
+  } catch (error) {
+    console.error("Error adding item to cart:", error.message);
+    throw error;
+  }
 };
 
 // Fetch categories

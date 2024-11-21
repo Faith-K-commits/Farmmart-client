@@ -1,4 +1,4 @@
-const BASE_URL = "https://farmmart-tvco.onrender.com/";
+const BASE_URL = "https://farmmart-tvco.onrender.com";
 
 export const createAnimal = async (formData) => {
   const response = await fetch(`${BASE_URL}/vendor/animals`, {
@@ -56,19 +56,27 @@ export const updateAnimal = async (animalId, formData) => {
 
 // Delete an animal
 export const deleteAnimal = async (animalId) => {
+  if (!animalId) throw new Error("Animal ID is required for deletion");
+
   const token = localStorage.getItem("token");
   if (!token) throw new Error("Authorization token is missing");
 
-  const response = await fetch(`${BASE_URL}/vendor/animals/${animalId}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`, // Include token for authentication
-    },
-  });
+  const response = await fetch(
+    `${BASE_URL}/vendor/animals/delete/${animalId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   if (!response.ok) {
-    throw new Error("Failed to delete animal");
+    const errorDetails = await response.json();
+    throw new Error(
+      `Failed to delete animal: ${errorDetails.error || response.statusText}`
+    );
   }
 
-  return await response.json(); // Return the response for confirmation
+  return await response.json(); // Return response for confirmation
 };
