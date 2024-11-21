@@ -96,7 +96,7 @@ export const getSimilarAnimals = async (vendorId) => {
 // Remove one quantity of animal from cart
 export const removeFromCart = async (animalId) => {
   const response = await fetch(`${BASE_URL}/cart/1/items/${animalId}`, {
-    method: "PATCH",
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },

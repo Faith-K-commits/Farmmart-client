@@ -10,6 +10,9 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      headers: {
+        'Cache-Control': 'no-store', // Disable caching in development
+      },
     },
   },
   test: {

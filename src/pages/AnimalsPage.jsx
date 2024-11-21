@@ -1,3 +1,4 @@
+// src/pages/AnimalsPage.jsx
 import React, { useState, useEffect } from "react";
 import AnimalCard from "../components/AnimalCard";
 import Pagination from "../components/Pagination";
@@ -22,6 +23,7 @@ function AnimalsPage() {
   const [categories, setCategories] = useState([]);
   const [breeds, setBreeds] = useState([]);
 
+  // Fetch dropdown data for categories and breeds
   useEffect(() => {
     const fetchDropdownData = async () => {
       try {
@@ -38,6 +40,7 @@ function AnimalsPage() {
     fetchDropdownData();
   }, []);
 
+  // Load animals based on filters
   useEffect(() => {
     const loadAnimals = async () => {
       let response;
@@ -59,6 +62,7 @@ function AnimalsPage() {
     loadAnimals();
   }, [currentPage, filters]);
 
+  // Handle filter changes
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
@@ -66,12 +70,14 @@ function AnimalsPage() {
   };
 
   return (
-    <div className="flex p-6">
-      {/* Sidebar Search and Filter Section */}
-      <div className="w-1/4 pr-6 ">
-        <div className="sticky top-6">
+    <div className="flex flex-col md:flex-row p-6 bg-slate-500">
+      {/* Sidebar Section */}
+      <div className="w-full md:w-1/4 mb-6 md:mb-0 md:pr-6">
+        <div className="bg-white p-4 rounded-lg shadow-md sticky top-6">
           <h1 className="text-2xl text-orange-400 font-bold mb-4">Animals</h1>
           <h2 className="text-xl font-bold mb-4">Search</h2>
+
+          {/* Category Search Input */}
           <div className="mb-4">
             <input
               list="categoryOptions"
@@ -80,7 +86,7 @@ function AnimalsPage() {
               placeholder="Search category..."
               value={filters.category}
               onChange={handleFilterChange}
-              className="border p-2 rounded w-auto"
+              className="w-full border p-2 rounded-lg"
             />
             <datalist id="categoryOptions">
               {categories.map((category, idx) => (
@@ -88,7 +94,9 @@ function AnimalsPage() {
               ))}
             </datalist>
           </div>
-          <div className="mb-5">
+
+          {/* Breed Search Input */}
+          <div className="mb-4">
             <input
               list="breedOptions"
               type="text"
@@ -96,34 +104,32 @@ function AnimalsPage() {
               placeholder="Search breed..."
               value={filters.breed}
               onChange={handleFilterChange}
-              className="border p-2 rounded w-auto"
+              className="w-full border p-2 rounded-lg"
             />
-            <datalist id="categoryOptions">
-              {categories.map((breed, idx) => (
+            <datalist id="breedOptions">
+              {breeds.map((breed, idx) => (
                 <option key={idx} value={breed} />
               ))}
             </datalist>
           </div>
-          <h2 className="text-xl font-bold mb-4">#Filters</h2>
+
+          <h2 className="text-xl font-bold mb-4">Filters</h2>
 
           {/* Category Dropdown */}
           <div className="mb-4">
             <label className="block mb-1">Category</label>
             <select
               name="category"
-              placeholder="Category"
               value={filters.category}
               onChange={handleFilterChange}
-              className="border p-2 rounded w-auto"
+              className="w-full border p-2 rounded-lg"
             >
               <option value="">All</option>
-              <datalist id="categoryOptions">
-                {categories.map((category, idx) => (
-                  <option key={idx} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </datalist>
+              {categories.map((category, idx) => (
+                <option key={idx} value={category}>
+                  {category}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -132,23 +138,20 @@ function AnimalsPage() {
             <label className="block mb-1">Breed</label>
             <select
               name="breed"
-              placeholder="Breed"
               value={filters.breed}
               onChange={handleFilterChange}
-              className="border p-2 rounded w-auto"
+              className="w-full border p-2 rounded-lg"
             >
               <option value="">All</option>
-              <datalist id="breedOptions">
-                {breeds.map((breed, idx) => (
-                  <option key={idx} value={breed}>
-                    {breed}
-                  </option>
-                ))}
-              </datalist>
+              {breeds.map((breed, idx) => (
+                <option key={idx} value={breed}>
+                  {breed}
+                </option>
+              ))}
             </select>
           </div>
 
-          {/* Min Age Field */}
+          {/* Min Age Input */}
           <div className="mb-4">
             <label className="block mb-1">Minimum Age</label>
             <input
@@ -164,11 +167,11 @@ function AnimalsPage() {
                   },
                 })
               }
-              className="border p-2 rounded w-auto"
+              className="w-full border p-2 rounded-lg"
             />
           </div>
 
-          {/* Max Age Field */}
+          {/* Max Age Input */}
           <div className="mb-4">
             <label className="block mb-1">Maximum Age</label>
             <input
@@ -184,21 +187,21 @@ function AnimalsPage() {
                   },
                 })
               }
-              className="border p-2 rounded w-auto"
+              className="w-full border p-2 rounded-lg"
             />
           </div>
         </div>
       </div>
 
       {/* Animals List Section */}
-      <div className="w-3/4 ">
+      <div className="w-full md:w-3/4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {animals.map((animal) => (
             <AnimalCard key={animal.id} animal={animal} />
           ))}
         </div>
 
-        {/* Pagination */}
+        {/* Pagination Component */}
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

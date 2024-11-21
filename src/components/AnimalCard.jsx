@@ -53,7 +53,7 @@ const AnimalCard = ({ animal }) => {
   return (
     <div
       onClick={handleClick}
-      className="border p-4 rounded-lg shadow hover:shadow-lg transition duration-200 cursor-pointer w-60"
+      className="border p-4 rounded-lg shadow hover:shadow-lg bg-white transition duration-200 cursor-pointer w-auto"
     >
       <img
         src={animal.image_url}

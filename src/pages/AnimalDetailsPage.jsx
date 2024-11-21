@@ -40,7 +40,6 @@ function AnimalDetailsPage() {
 
     try {
       await addToCart(animal.id, 1);
-      // setAvailableQuantity((prevQuantity) => prevQuantity - 1);
       toast.success("Animal added to cart successfully!", {
         position: "top-right",
         autoClose: 3000,
@@ -67,7 +66,6 @@ function AnimalDetailsPage() {
   const handleRemoveFromCart = async () => {
     try {
       const response = await removeFromCart(animal.id);
-      console.log("Remove from cart response:", response);
       if (response.success) {
         setAvailableQuantity((prevQuantity) => prevQuantity + 1);
         toast.success("Animal removed from cart successfully!", {
@@ -113,7 +111,7 @@ function AnimalDetailsPage() {
   if (!animal) return <p>Loading...</p>;
 
   return (
-    <div className="animal-details-page p-8 bg-gray-100 flex flex-co md:flex-row items-start space-x-8">
+    <div className="animal-details-page p-8 bg-gray-100 flex flex-col md:flex-row items-start space-x-8">
       {/* Animal Image */}
       <div className="animal-image flex-shrink-0">
         <img
@@ -135,30 +133,32 @@ function AnimalDetailsPage() {
             Ksh.{animal.price}
           </p>
           <p className="text-2xl font-semibold text-gray-600 mt-2">
-            Available Quantity: {animal.available_quantity}
+            Available Quantity: {availableQuantity}
           </p>
         </div>
         <p className="text-gray-600 my-4">{animal.description}</p>
 
         {/* Actions */}
-        <div className="actions flex space-x-4 mt-6">
+        <div className="actions flex space-x-4 mt-6 items-center">
+          <button
+            onClick={handleRemoveFromCart}
+            className="relative w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700"
+          >
+            <span className="absolute w-4 h-0.5 bg-white"></span>
+            {/* <span className="absolute h-4 w-0.5 bg-white"></span> */}
+          </button>
+          <button
+            onClick={handleAddToCart}
+            className="relative w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700"
+          >
+            <span className="absolute w-4 h-0.5 bg-white"></span>
+            <span className="absolute h-4 w-0.5 bg-white"></span>
+          </button>
           <button
             onClick={handleBackClick}
             className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-orange-300"
           >
             ← Back
-          </button>
-          <button
-            onClick={handleAddToCart}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Add to Cart
-          </button>
-          <button
-            onClick={handleRemoveFromCart}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Remove from Cart
           </button>
         </div>
       </div>
