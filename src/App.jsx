@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import AppRoutes from "./components/Routes";
 import { useAuth } from "./components/UseAuth";
 
+
 const AppWrapper = () => {
   const { auth, login, logout } = useAuth(); // Using the useAuth hook for login/logout functionality
   const [loading, setLoading] = useState(true); // State for loading
@@ -36,7 +37,9 @@ const AppWrapper = () => {
 
   return (
     <div>
+      <header>
       <Navbar isLoggedIn={!!auth} role={auth?.role} handleLogout={handleLogout} />
+      </header>
       <AppRoutes isLoggedIn={!!auth} role={auth?.role} />
     </div>
   );

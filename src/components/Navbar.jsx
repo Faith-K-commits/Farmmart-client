@@ -14,7 +14,7 @@ const Navbar = () => {
   }, [auth]); // Dependency on auth to trigger re-render
 
   return (
-    <nav className="bg-orange-500 flex items-center justify-between p-4">
+    <nav className="bg-orange-500 flex items-center justify-between p-4 fixed top-0 left-0 w-full z-10">
       <img src={farmmartLogo} alt="FarmMart Logo" className="h-10 w-auto" />
 
       <button
@@ -44,106 +44,107 @@ const Navbar = () => {
       >
         {auth?.token && (
           <>
-          {auth.role === "vendor" && (
-            <>
-              <li>
-                <Link to="/vendor/dashboard" className="text-white">
-                  Vendor Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link to="/animals" className="text-white">
-                  Animals
-                </Link>
-              </li>
-            </>
-          )}
-          {auth.role === "customer" && (
-            <>
-              <li>
-                <Link to="/customer/dashboard" className="text-white">
-                  Customer Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link to="/animals" className="text-white">
-                  Animals
-                </Link>
-              </li>
-              <li>
-                <Link to="/cart" className="text-white">
-                  Cart
-                </Link>
-              </li>
-            </>
-          )}
-          {auth.role === "admin" && (
-            <>
-              <li>
-                <Link to="/admin/dashboard" className="text-white">
-                  Admin Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link to="/users" className="text-white">
-                  User Table
-                </Link>
-              </li>
-            </>
-          )}
-          <li>
-            <button
-              onClick={logout}
-              className="bg-green-500 text-white px-3 py-1 rounded"
-            >
-              Logout
-            </button>
-          </li>
-        </>
-      )}
-
-      {/* Non-Authenticated Links */}
-      {!auth?.token && (
-        <>
-          {/* Signup Dropdown */}
-          <li
-            className="relative text-center"
-            onClick={() => setIsSignupOpen(!isSignupOpen)}
-          >
-            <button className="text-white hover:underline">Signup</button>
-            {isSignupOpen && (
-              <ul className="absolute bg-white text-black p-2 space-y-2 rounded shadow-md mt-2">
+            <li>
+              <Link to="/profile" className="text-white">
+                Profile
+              </Link>
+            </li>
+            {auth.role === "vendor" && (
+              <>
                 <li>
-                  <Link
-                    to="/signup/customer"
-                    className="block text-black hover:bg-orange-500 hover:text-white p-2"
-                  >
-                    Customer Signup
+                  <Link to="/vendor/dashboard" className="text-white">
+                    Vendor Dashboard
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to="/signup/vendor"
-                    className="block text-black hover:bg-orange-500 hover:text-white p-2"
-                  >
-                    Vendor Signup
+                  <Link to="/animals" className="text-white">
+                    Animals
                   </Link>
                 </li>
-              </ul>
+              </>
             )}
-          </li>
+            {auth.role === "customer" && (
+              <>
+                <li>
+                  <Link to="/customer/dashboard" className="text-white">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/animals" className="text-white">
+                    Animals
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/cart" className="text-white">
+                    Cart
+                  </Link>
+                </li>
+              </>
+            )}
+            {auth.role === "admin" && (
+              <>
+                <li>
+                  <Link to="/admin/dashboard" className="text-white">
+                    Admin Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/users" className="text-white">
+                    User Table
+                  </Link>
+                </li>
+              </>
+            )}
+            <li>
+              <button
+                onClick={logout}
+                className="bg-green-500 text-white px-3 py-1 rounded"
+              >
+                Logout
+              </button>
+            </li>
+          </>
+        )}
 
-          {/* Login Link */}
-          <li>
-            <Link to="/login" className="text-white hover:underline">
-              Login
-            </Link>
-          </li>
-        </>
-      )}
-    </ul>
-  </nav>
-);
+        {!auth?.token && (
+          <>
+            <li
+              className="relative text-center"
+              onClick={() => setIsSignupOpen(!isSignupOpen)}
+            >
+              <button className="text-white hover:underline">Signup</button>
+              {isSignupOpen && (
+                <ul className="absolute bg-white text-black p-2 space-y-2 rounded shadow-md mt-2">
+                  <li>
+                    <Link
+                      to="/signup/customer"
+                      className="block text-black hover:bg-orange-500 hover:text-white p-2"
+                    >
+                      Customer Signup
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/signup/vendor"
+                      className="block text-black hover:bg-orange-500 hover:text-white p-2"
+                    >
+                      Vendor Signup
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+            <li>
+              <Link to="/login" className="text-white hover:underline">
+                Login
+              </Link>
+            </li>
+          </>
+        )}
+      </ul>
+    </nav>
+  );
 };
 
 export default Navbar;

@@ -1,61 +1,59 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../components/UseAuth"; // Import useAuth hook
+import PropTypes from "prop-types";
+import { useAuth } from "../components/UseAuth";
 
 const ProtectedRoute = ({ children, requiredRole }) => {
-  const { auth } = useAuth(); // Access auth state from useAuth hook
-  const [loading, setLoading] = useState(true);
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const { auth } = useAuth(); // Access authentication state
+  const [loading, setLoading] = useState(true); // Loading state
+  const [isAuthorized, setIsAuthorized] = useState(false); // Authorization state
 
   useEffect(() => {
-    // If no token exists or role doesn't match, the user is not authorized
-    if (!auth || auth.role !== requiredRole) {
+    // Check if the user is authenticated and has the required role
+    if (!auth || (requiredRole && ![].concat(requiredRole).includes(auth.role))) {
       setLoading(false);
       setIsAuthorized(false);
       return;
     }
 
-    // Check token expiry if token exists
-    const verifyToken = async () => {
+    // If token exists, check expiration
+    if (auth.token) {
       try {
-        const { default: jwtDecode } = await import("jwt-decode");
-        const decodedToken = jwtDecode(auth.token);
-
-        // Check token expiry
+        const decodedToken = JSON.parse(atob(auth.token.split(".")[1]));
         if (decodedToken.exp * 1000 < Date.now()) {
+          // Token expired, clear auth state
           localStorage.removeItem("token");
           localStorage.removeItem("role");
-          setLoading(false);
           setIsAuthorized(false);
         } else {
           setIsAuthorized(true);
-          setLoading(false);
         }
-      } catch (err) {
+      } catch {
+        // Handle invalid token
         localStorage.removeItem("token");
         localStorage.removeItem("role");
-        setLoading(false);
         setIsAuthorized(false);
       }
-    };
-
-    if (auth.token) {
-      verifyToken();
     } else {
-      setLoading(false);
       setIsAuthorized(false);
     }
+    setLoading(false); // Mark loading as false after checks
   }, [auth, requiredRole]);
 
   if (loading) {
-    return <div>Loading...</div>; // Or a spinner/loader component
+    return <div>Loading...</div>; // Replace with a spinner or loader component
   }
 
   if (!isAuthorized) {
     return <Navigate to={auth ? "/unauthorized" : "/login"} replace />;
   }
 
-  return children;
+  return children; // Render protected content if authorized
+};
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired, // The component(s) to render
+  requiredRole: PropTypes.oneOfType([PropTypes.string, PropTypes.array]), // Role(s) required to access this route
 };
 
 export default ProtectedRoute;
