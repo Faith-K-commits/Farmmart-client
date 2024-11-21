@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getAnimalDetails, addToCart, removeFromCart } from "../api/animalsApi";
 import { toast } from "react-toastify";
+import { FaPhoneAlt, FaEnvelope, FaStore, FaTractor } from "react-icons/fa";
 
 function AnimalDetailsPage() {
   const { id } = useParams();
@@ -27,12 +28,6 @@ function AnimalDetailsPage() {
     if (availableQuantity === 0) {
       toast.error("Sorry, this animal is currently out of stock.", {
         position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
       });
       return;
     }
@@ -40,67 +35,31 @@ function AnimalDetailsPage() {
 
     try {
       await addToCart(animal.id, 1);
-      // setAvailableQuantity((prevQuantity) => prevQuantity - 1);
       toast.success("Animal added to cart successfully!", {
         position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
       });
     } catch (error) {
       setAvailableQuantity((prevQuantity) => prevQuantity + 1);
-      toast.error("Failed to add animal to cart.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error("Failed to add animal to cart.", { position: "top-right" });
     }
   };
 
   const handleRemoveFromCart = async () => {
     try {
       const response = await removeFromCart(animal.id);
-      console.log("Remove from cart response:", response);
       if (response.success) {
         setAvailableQuantity((prevQuantity) => prevQuantity + 1);
         toast.success("Animal removed from cart successfully!", {
           position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
         });
       } else {
-        console.error("Error removing from cart:", response.error);
         toast.error("Failed to remove animal from cart.", {
           position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
         });
       }
     } catch (error) {
-      console.error("Error removing from cart:", error);
       toast.error("Failed to remove animal from cart.", {
         position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
       });
     }
   };
@@ -113,52 +72,78 @@ function AnimalDetailsPage() {
   if (!animal) return <p>Loading...</p>;
 
   return (
-    <div className="animal-details-page p-8 bg-gray-100 flex flex-co md:flex-row items-start space-x-8">
+    <div className="animal-details-page p-8 bg-gray-100 flex flex-col md:flex-row items-start space-x-8 animate-fadeIn">
       {/* Animal Image */}
       <div className="animal-image flex-shrink-0">
         <img
           src={animal.image_url}
           alt={animal.name}
-          className="w-64 h-64 object-cover rounded-lg"
+          className="w-80 h-80 object-cover rounded-lg shadow-md"
         />
       </div>
 
       {/* Product Info */}
-      <div className="product-info">
-        <h1 className="text-3xl font-bold mb-2">{animal.name}</h1>
-        <p className="text-lg text-gray-700">Vendor: {animal.vendor_name}</p>
-        <p className="text-lg text-gray-700">Farm: {animal.farm_name}</p>
-        <p className="text-lg text-gray-700">Phone: {animal.phone_number}</p>
-        <p className="text-lg text-gray-700">Email: {animal.email}</p>
-        <div className="actions flex space-x-4 mt-6">
-          <p className="text-2xl font-semibold text-green-600 mt-2">
-            Ksh.{animal.price}
-          </p>
-          <p className="text-2xl font-semibold text-gray-600 mt-2">
-            Available Quantity: {animal.available_quantity}
-          </p>
+      <div className="product-info bg-white p-6 rounded-lg shadow-lg border w-full md:w-2/3">
+        <h1 className="text-4xl font-bold mb-4">{animal.name}</h1>
+
+        {/* Vendor and Contact Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="info-item flex items-center text-gray-700">
+            <FaTractor className="mr-2 text-orange-500" />
+            <p>Farm: {animal.farm_name}</p>
+          </div>
+          <div className="info-item flex items-center text-gray-700">
+            <FaStore className="mr-2 text-orange-500" />
+            <p>Vendor: {animal.vendor_name}</p>
+          </div>
+          <div className="info-item flex items-center text-gray-700">
+            <FaPhoneAlt className="mr-2 text-green-500" />
+            <p>Phone: {animal.phone_number}</p>
+          </div>
+          <div className="info-item flex items-center text-gray-700">
+            <FaEnvelope className="mr-2 text-blue-500" />
+            <p>Email: {animal.email}</p>
+          </div>
         </div>
-        <p className="text-gray-600 my-4">{animal.description}</p>
+
+        {/* Price and Quantity */}
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-2xl font-semibold text-green-600">
+            Price: Ksh.{animal.price}
+          </p>
+          {availableQuantity > 0 ? (
+            <p className="text-2xl font-semibold text-gray-600">
+              Available: {availableQuantity}
+            </p>
+          ) : (
+            <p className="text-xl font-semibold text-red-600">Out of Stock</p>
+          )}
+        </div>
+
+        {/* Age and Description */}
+        <p className="text-lg text-gray-700 mb-4">Age: {animal.age} years</p>
+        <p className="text-gray-600 mb-6">{animal.description}</p>
 
         {/* Actions */}
-        <div className="actions flex space-x-4 mt-6">
+        <div className="actions flex space-x-4 mt-6 items-center">
+          <button
+            onClick={handleRemoveFromCart}
+            className="relative w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700"
+          >
+            <span className="absolute w-4 h-0.5 bg-white"></span>
+          </button>
+          <button
+            onClick={handleAddToCart}
+            className="relative w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700"
+          >
+            <span className="absolute w-4 h-0.5 bg-white"></span>
+            <span className="absolute h-4 w-0.5 bg-white"></span>
+          </button>
           <button
             onClick={handleBackClick}
             className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-orange-300"
           >
             ← Back
-          </button>
-          <button
-            onClick={handleAddToCart}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Add to Cart
-          </button>
-          <button
-            onClick={handleRemoveFromCart}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Remove from Cart
           </button>
         </div>
       </div>

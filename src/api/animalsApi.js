@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:5000"; // Adjust this as needed for your backend
+const BASE_URL = "https://farmmart-tvco.onrender.com";
 
 // Fetch animals using the /animals/search endpoint for category and breed search
 export const searchAnimals = async (
@@ -96,7 +96,7 @@ export const getSimilarAnimals = async (vendorId) => {
 // Remove one quantity of animal from cart
 export const removeFromCart = async (animalId) => {
   const response = await fetch(`${BASE_URL}/cart/1/items/${animalId}`, {
-    method: "PATCH",
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
