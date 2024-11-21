@@ -7,16 +7,17 @@ const Navbar = () => {
   const { auth, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
-  const [userRole, setUserRole] = useState(auth?.role); // Local state for role
 
   useEffect(() => {
-    setUserRole(auth?.role); // Update role when auth changes
-  }, [auth]); // Dependency on auth to trigger re-render
+    // No-op if user role changes, handled via `auth` dependency.
+  }, [auth]);
 
   return (
-    <nav className="bg-orange-500 flex items-center justify-between p-4 fixed top-0 left-0 w-full z-10">
+    <nav className="fixed top-0 left-0 w-full bg-orange-500 flex items-center justify-between p-4 shadow-lg z-50">
+      {/* Logo */}
       <img src={farmmartLogo} alt="FarmMart Logo" className="h-10 w-auto" />
 
+      {/* Menu Button for Mobile */}
       <button
         className="text-white md:hidden"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -37,18 +38,15 @@ const Navbar = () => {
         </svg>
       </button>
 
+      {/* Menu Items */}
       <ul
         className={`${
           isMenuOpen ? "block" : "hidden"
-        } absolute top-16 left-0 w-full bg-orange-500 md:flex md:static md:w-auto md:space-x-4 items-center`}
+        } absolute md:static top-16 left-0 w-full bg-orange-500 md:flex md:space-x-4 items-center md:w-auto text-center`}
       >
+        {/* Authenticated Links */}
         {auth?.token && (
           <>
-            <li>
-              <Link to="/profile" className="text-white">
-                Profile
-              </Link>
-            </li>
             {auth.role === "vendor" && (
               <>
                 <li>
@@ -86,12 +84,12 @@ const Navbar = () => {
               <>
                 <li>
                   <Link to="/admin/dashboard" className="text-white">
-                    Admin Dashboard
+                   Dashboard
                   </Link>
                 </li>
                 <li>
                   <Link to="/users" className="text-white">
-                    User Table
+                    Users
                   </Link>
                 </li>
               </>
@@ -99,7 +97,7 @@ const Navbar = () => {
             <li>
               <button
                 onClick={logout}
-                className="bg-green-500 text-white px-3 py-1 rounded"
+                className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-700"
               >
                 Logout
               </button>
@@ -107,10 +105,11 @@ const Navbar = () => {
           </>
         )}
 
+        {/* Non-Authenticated Links */}
         {!auth?.token && (
           <>
             <li
-              className="relative text-center"
+              className="relative"
               onClick={() => setIsSignupOpen(!isSignupOpen)}
             >
               <button className="text-white hover:underline">Signup</button>
