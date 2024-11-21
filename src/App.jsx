@@ -43,7 +43,7 @@ const AppWrapper = () => {
       <AppRoutes isLoggedIn={!!auth} role={auth?.role} />
     </div>
   );
-};
+}
 
 const App = () => {
   return (
