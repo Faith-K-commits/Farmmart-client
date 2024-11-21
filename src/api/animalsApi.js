@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:5000"; // Adjust this as needed for your backend
+const BASE_URL = "https://farmmart-tvco.onrender.com"; // Adjust this as needed for your backend
 
 // Fetch animals using the /animals/search endpoint for category and breed search
 export const searchAnimals = async (

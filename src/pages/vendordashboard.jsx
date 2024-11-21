@@ -147,6 +147,23 @@ const VendorDashboard = () => {
     }
   };
 
+  const handleDelete = async (animalId) => {
+    if (!window.confirm("Are you sure you want to delete this animal?")) return;
+
+    try {
+      await deleteAnimal(animalId);
+
+      // Update the state by removing the deleted animal
+      setAnimals((prevAnimals) =>
+        prevAnimals.filter((animal) => animal.id !== animalId)
+      );
+
+      toast.success("Animal deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete animal.");
+    }
+  };
+
   return (
     <div className="vendor-dashboard flex">
       {/* Navigation */}
@@ -256,6 +273,8 @@ const VendorDashboard = () => {
             </button>
           </form>
         )}
+
+        {/* View animals section */}
 
         {activeSection === "view" && (
           <div>
@@ -371,6 +390,12 @@ const VendorDashboard = () => {
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-2"
                       >
                         Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(animal.id)}
+                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                      >
+                        Delete
                       </button>
                     </>
                   )}

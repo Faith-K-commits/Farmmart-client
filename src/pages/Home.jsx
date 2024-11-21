@@ -1,4 +1,3 @@
-// src/pages/Home.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -13,7 +12,9 @@ const Home = () => {
   // Function to fetch random featured animals
   const fetchFeaturedAnimals = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/animals/featured");
+      const response = await fetch(
+        "https://farmmart-tvco.onrender.com/animals/featured"
+      );
       if (!response.ok) throw new Error("Failed to fetch featured animals.");
       const data = await response.json();
 

@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:5000";
+const BASE_URL = "https://farmmart-tvco.onrender.com/";
 
 export const createAnimal = async (formData) => {
   const response = await fetch(`${BASE_URL}/vendor/animals`, {
@@ -16,13 +16,13 @@ export const createAnimal = async (formData) => {
 
 // Fetch the animals for the logged-in vendor
 export const fetchVendorAnimals = async () => {
-  const token = localStorage.getItem("token"); // Get the token from localStorage
+  const token = localStorage.getItem("token");
   if (!token) throw new Error("Authorization token is missing");
 
   const response = await fetch(`${BASE_URL}/vendor/animals/list`, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`, // Pass the token for authentication
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -30,7 +30,8 @@ export const fetchVendorAnimals = async () => {
     throw new Error("Failed to fetch vendor animals");
   }
 
-  return await response.json(); // Return the animals as a JSON array
+  const data = await response.json(); // Parse JSON
+  return data.animals; // Access the animals array directly
 };
 
 // Update an animal
