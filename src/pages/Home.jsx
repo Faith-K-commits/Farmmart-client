@@ -74,33 +74,33 @@ const Home = () => {
       {/* Feature Highlights Section */}
       <div className="features-section my-12 px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="feature-card bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-          <img
+          {/* <img
             src="/assets/secure-payments.svg"
             alt="Secure Payments"
             className="w-12 h-12 mb-4"
-          />
+          /> */}
           <h3 className="text-xl font-semibold mb-2">Secure Payments</h3>
           <p className="text-gray-600 text-center">
             Pay confidently with our secure and reliable payment system.
           </p>
         </div>
         <div className="feature-card bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-          <img
+          {/* <img
             src="/assets/direct-sales.svg"
             alt="Direct Sales"
             className="w-12 h-12 mb-4"
-          />
+          /> */}
           <h3 className="text-xl font-semibold mb-2">Direct Sales</h3>
           <p className="text-gray-600 text-center">
             Buy directly from farmers without any middlemen.
           </p>
         </div>
         <div className="feature-card bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-          <img
+          {/* <img
             src="/assets/quality-animals.svg"
             alt="Quality Animals"
             className="w-12 h-12 mb-4"
-          />
+          /> */}
           <h3 className="text-xl font-semibold mb-2">Quality Animals</h3>
           <p className="text-gray-600 text-center">
             We ensure only healthy and high-quality animals are listed.
