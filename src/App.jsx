@@ -1,55 +1,48 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, useNavigate } from "react-router-dom"; 
+import React, { useEffect } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Provider } from "react-redux"; // Import Provider from react-redux
 import Navbar from "./components/Navbar";
 import AppRoutes from "./components/Routes";
-import { useAuth } from "./components/UseAuth";
-
+import { logout } from "./components/authSlice";
+import store from "./components/store"; // Import your Redux store
 
 const AppWrapper = () => {
-  const { auth, login, logout } = useAuth(); // Using the useAuth hook for login/logout functionality
-  const [loading, setLoading] = useState(true); // State for loading
-
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout(); // Use logout function from the useAuth hook
-    navigate("/login");
-  };
+  const dispatch = useDispatch();
+  const { token, role, loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (auth && auth.token) {
-      // If token is present, decode and set role
-      const decodedToken = JSON.parse(atob(auth.token.split(".")[1]));
-      // Check if the token is valid or expired
+    if (token) {
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
+
+      // Check if the token is expired
       if (decodedToken.exp * 1000 < Date.now()) {
-        logout(); // Logout if the token is expired
-      } else {
-        setLoading(false);
+        dispatch(logout()); // Logout if expired
       }
-    } else {
-      setLoading(false);
     }
-  }, [auth, logout]); // Ensure this effect runs when the auth object changes
+  }, [token, dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading spinner while processing
+    return <div>Loading...</div>; // Show a loading spinner if needed
   }
 
   return (
     <div>
       <header>
-      <Navbar isLoggedIn={!!auth} role={auth?.role} handleLogout={handleLogout} />
+        <Navbar isLoggedIn={!!token} role={role} handleLogout={() => dispatch(logout())} />
       </header>
-      <AppRoutes isLoggedIn={!!auth} role={auth?.role} />
+      <AppRoutes isLoggedIn={!!token} role={role} />
     </div>
   );
 };
 
 const App = () => {
   return (
-    <Router>
-      <AppWrapper />
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <AppWrapper />
+      </Router>
+    </Provider>
   );
 };
 

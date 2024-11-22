@@ -1,15 +1,13 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../components/authSlice";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../components/UseAuth"; // Import useAuth hook
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState(null);
-  const navigate = useNavigate(); // React Router hook for redirection
-  const { login } = useAuth(); // Access the login function from useAuth
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error, role } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     setFormData({
@@ -18,52 +16,25 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError(null); // Reset any previous errors
-
-    if (!formData.email || !formData.password) {
-      setError("Email and password are required");
-      return;
-    }
-
-    try {
-      const response = await fetch("https://farmmart-tvco.onrender.com/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.error || "Invalid credentials");
-        return;
+    dispatch(loginUser(formData)).then((result) => {
+      if (result.meta.requestStatus === "fulfilled") {
+        switch (role) {
+          case "vendor":
+            navigate("/vendor/dashboard");
+            break;
+          case "customer":
+            navigate("/customer/dashboard");
+            break;
+          case "admin":
+            navigate("/admin/dashboard");
+            break;
+          default:
+            console.error("Unknown user role");
+        }
       }
-
-      const data = await response.json();
-
-      // Store the JWT token in localStorage and manage auth state
-      login(data.token, data.user.role); // Login using useAuth
-
-      // Redirect the user based on their role
-      switch (data.user.role) {
-        case "vendor":
-          navigate("/vendor/dashboard");
-          break;
-        case "customer":
-          navigate("/customer/dashboard");
-          break;
-        case "admin":
-          navigate("/admin/dashboard");
-          break;
-        default:
-          setError("Unknown user role");
-      }
-    } catch (err) {
-      setError("An error occurred. Please try again.");
-    }
+    });
   };
 
   return (
@@ -94,8 +65,9 @@ const Login = () => {
           <button
             type="submit"
             className="w-full bg-orange-500 text-white py-2 rounded-lg font-semibold hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
         {error && <p style={{ color: "red" }}>{error}</p>}

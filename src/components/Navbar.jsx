@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../components/authSlice"; // Redux action
 import farmmartLogo from "../assets/farmmart.png";
-import { useAuth } from "./UseAuth";
 
 const Navbar = () => {
-  const { auth, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
 
-  useEffect(() => {
-    // No-op if user role changes, handled via `auth` dependency.
-  }, [auth]);
+  const { token, role } = useSelector((state) => state.auth); // Access auth state from Redux
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout()); // Clear auth state
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-orange-500 flex items-center justify-between p-4 shadow-lg z-50">
@@ -45,9 +48,9 @@ const Navbar = () => {
         } absolute md:static top-16 left-0 w-full bg-orange-500 md:flex md:space-x-4 items-center md:w-auto text-center`}
       >
         {/* Authenticated Links */}
-        {auth?.token && (
+        {token && (
           <>
-            {auth.role === "vendor" && (
+            {role === "vendor" && (
               <>
                 <li>
                   <Link to="/vendor/dashboard" className="text-white">
@@ -61,7 +64,7 @@ const Navbar = () => {
                 </li>
               </>
             )}
-            {auth.role === "customer" && (
+            {role === "customer" && (
               <>
                 <li>
                   <Link to="/customer/dashboard" className="text-white">
@@ -80,11 +83,11 @@ const Navbar = () => {
                 </li>
               </>
             )}
-            {auth.role === "admin" && (
+            {role === "admin" && (
               <>
                 <li>
                   <Link to="/admin/dashboard" className="text-white">
-                   Dashboard
+                    Dashboard
                   </Link>
                 </li>
                 <li>
@@ -96,7 +99,7 @@ const Navbar = () => {
             )}
             <li>
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-700"
               >
                 Logout
@@ -106,7 +109,7 @@ const Navbar = () => {
         )}
 
         {/* Non-Authenticated Links */}
-        {!auth?.token && (
+        {!token && (
           <>
             <li
               className="relative"
