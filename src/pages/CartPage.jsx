@@ -14,77 +14,122 @@ const CartPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
-  // Fetch cart items on initial load or when cartId or currentPage changes
-  useEffect(() => {
-    const storedCartId = sessionStorage.getItem("cartId");
-    if (!cartId && storedCartId) {
-      navigate(`/cart/${storedCartId}`);
+ useEffect(() => {
+  const storedCartId = sessionStorage.getItem("cartId");
+
+  // If no cartId is provided and a storedCartId exists, navigate to it
+  if (!cartId && storedCartId) {
+    navigate(`/cart/${storedCartId}`);
+    return;
+  }
+
+  // If cartId is valid, fetch the items
+  if (cartId) {
+    fetchCartItems(cartId, currentPage);
+  } else {
+    setErrorMessage("Cart ID is missing or invalid.");
+    setLoading(false);
+  }
+}, [cartId, navigate, currentPage]);
+
+// Fetch cart items from the API (paginated)
+const fetchCartItems = async (cartId, page = 1) => {
+  setLoading(true);
+  setErrorMessage("");  // Clear any previous error
+
+  // Ensure cartId is valid before making the request
+  if (!cartId || !cartId.split('-')[1]) {
+    setErrorMessage("Cart ID is invalid.");
+    setLoading(false);
+    return; // Exit the function if cartId is invalid
+  }
+
+  try {
+    const userId = cartId.split('-')[1];  // Extract numeric user ID
+    const response = await fetch(
+      `http://127.0.0.1:5000/cart/${userId}/items?page=${page}&per_page=10&t=${new Date().getTime()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Error fetching cart items: " + response.statusText);
+    }
+
+    const data = await response.json();
+    console.log("Fetched Cart Data:", data);
+
+    if (data.status === "success" && data.cart_items) {
+      setCartItems(data.cart_items); // Update cart items
+      setTotalPrice(calculateTotalPrice(data.cart_items)); // Update total price
+      setTotalItems(data.total_items); // Set total items
+      setTotalPages(data.total_pages); // Set total pages for pagination
+    } else {
+      throw new Error("Cart data is malformed");
+    }
+  } catch (error) {
+    console.error("Error fetching cart items:", error);
+    setErrorMessage("Error fetching cart items: " + error.message);
+  } finally {
+    setLoading(false);
+  }
+};
+const handleAddToCart = async (animalId, quantity) => {
+  try {
+    // Check if cartId is valid
+    if (!cartId || !cartId.split('-')[1]) {
+      setErrorMessage("Cart ID is invalid.");
       return;
     }
-    if (cartId) {
-      fetchCartItems(cartId, currentPage);
-    } else {
-      setErrorMessage("Cart ID is missing or invalid.");
-      setLoading(false);
-    }
-  }, [cartId, navigate, currentPage]);
 
-  // Fetch cart items from the API (paginated)
-  const fetchCartItems = async (cartId, page = 1) => {
-    setLoading(true);
-    setErrorMessage("");  // Clear any previous error
-    try {
-      const userId = cartId.split('-')[1];  // Extract numeric user ID
-      const response = await fetch(
-        `http://127.0.0.1:5000/cart/${userId}/items?page=${page}&per_page=10&t=${new Date().getTime()}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Error fetching cart items: " + response.statusText);
-      }
-
-      const data = await response.json();
-      console.log("Fetched Cart Data:", data);
-
-      if (data.status === "success" && data.cart_items) {
-        setCartItems(data.cart_items); // Update cart items
-        setTotalPrice(calculateTotalPrice(data.cart_items)); // Update total price
-        setTotalItems(data.total_items); // Set total items
-        setTotalPages(data.total_pages); // Set total pages for pagination
+    // Call the function to add an item to the cart
+    const updatedItem = await addItemToCart(cartId, animalId, quantity);
+    
+    // Assuming updatedItem will contain the newly added item or updated item
+    setCartItems((prevItems) => {
+      // Add the new item or update the existing one
+      const existingItemIndex = prevItems.findIndex(item => item.animal_id === updatedItem.animal_id);
+      
+      if (existingItemIndex >= 0) {
+        // Update item quantity if it already exists
+        const updatedItems = [...prevItems];
+        updatedItems[existingItemIndex].quantity = updatedItem.quantity;
+        return updatedItems;
       } else {
-        throw new Error("Cart data is malformed");
+        // Add new item to the cart
+        return [...prevItems, updatedItem];
       }
-    } catch (error) {
-      console.error("Error fetching cart items:", error);
-      setErrorMessage("Error fetching cart items: " + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    });
 
-  // Function to calculate the total price of the cart
-  const calculateTotalPrice = (items) => {
-    return items.reduce((sum, item) => sum + item.animal_price * item.quantity, 0);
-  };
+    // Recalculate the total price
+    setTotalPrice(calculateTotalPrice([...cartItems, updatedItem]));
 
-  // Handle removing an item from the cart
-  const handleRemoveItem = async (animalId) => {
-    setErrorMessage(""); // Clear previous error
-    try {
-      await removeCartItem(cartId, animalId);
-      const updatedItems = cartItems.filter((item) => item.animal_id !== animalId);
-      setCartItems(updatedItems);
-      setTotalPrice(calculateTotalPrice(updatedItems)); // Recalculate total price
-    } catch (error) {
-      setErrorMessage(error.message); // Display error message if removal fails
-    }
-  };
+  } catch (error) {
+    setErrorMessage(error.message);
+  }
+};
+
+// Function to calculate the total price of the cart
+const calculateTotalPrice = (items) => {
+  return items.reduce((sum, item) => sum + item.animal_price * item.quantity, 0);
+};
+
+// Handle removing an item from the cart
+const handleRemoveItem = async (animalId) => {
+  setErrorMessage(""); // Clear previous error
+  try {
+    await removeCartItem(cartId, animalId);
+    const updatedItems = cartItems.filter((item) => item.animal_id !== animalId);
+    setCartItems(updatedItems);
+    setTotalPrice(calculateTotalPrice(updatedItems)); // Recalculate total price
+  } catch (error) {
+    setErrorMessage(error.message); // Display error message if removal fails
+  }
+};
 
   // Handle updating item quantity
   const handleQuantityChange = async (animalId, newQuantity) => {

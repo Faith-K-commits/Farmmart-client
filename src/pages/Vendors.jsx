@@ -8,15 +8,12 @@ const VendorPage = () => {
 
   const fetchVendors = async (currentPage) => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/vendors?page=${currentPage}&per_page=5`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`http://127.0.0.1:5000/vendors?page=${currentPage}&per_page=5`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const data = await response.json();
 
@@ -54,56 +51,36 @@ const VendorPage = () => {
       {error && <p className="error-message">{error}</p>}
       {!error && vendors.length > 0 ? (
         <>
-          <table>
-            <thead>
+          <table className="min-w-full table-auto bg-white border border-gray-300 rounded-lg shadow-lg">
+            <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                  ID
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                  Name
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                  Email
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                  Phone Number
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                  Farm Name
-                </th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ID</th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Name</th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Email</th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Phone Number</th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Farm Name</th>
               </tr>
             </thead>
             <tbody>
               {vendors.map((vendor) => (
                 <tr key={vendor.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-2 text-sm text-gray-600">
-                    {vendor.id}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-600">
-                    {vendor.name}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-600">
-                    {vendor.email}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-600">
-                    {vendor.phone_number || "N/A"}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-600">
-                    {vendor.farm_name || "N/A"}
-                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-600">{vendor.id}</td>
+                  <td className="px-4 py-2 text-sm text-gray-600">{vendor.name}</td>
+                  <td className="px-4 py-2 text-sm text-gray-600">{vendor.email}</td>
+                  <td className="px-4 py-2 text-sm text-gray-600">{vendor.phone_number || "N/A"}</td>
+                  <td className="px-4 py-2 text-sm text-gray-600">{vendor.farm_name || "N/A"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div className="pagination-controls">
-            <button onClick={handlePrevPage} disabled={!pagination.has_prev}>
+            <button onClick={handlePrevPage} disabled={!pagination.has_prev} className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 disabled:opacity-50">
               Previous
             </button>
-            <span>
+            <span className="text-sm font-medium">
               Page {pagination.current_page} of {pagination.total_pages}
             </span>
-            <button onClick={handleNextPage} disabled={!pagination.has_next}>
+            <button onClick={handleNextPage} disabled={!pagination.has_next} className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 disabled:opacity-50">
               Next
             </button>
           </div>

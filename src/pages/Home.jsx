@@ -1,4 +1,3 @@
-// src/pages/Home.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -13,7 +12,9 @@ const Home = () => {
   // Function to fetch random featured animals
   const fetchFeaturedAnimals = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/animals/featured");
+      const response = await fetch(
+        "https://farmmart-tvco.onrender.com/animals/featured"
+      );
       if (!response.ok) throw new Error("Failed to fetch featured animals.");
       const data = await response.json();
 
@@ -73,33 +74,33 @@ const Home = () => {
       {/* Feature Highlights Section */}
       <div className="features-section my-12 px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="feature-card bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-          <img
+          {/* <img
             src="/assets/secure-payments.svg"
             alt="Secure Payments"
             className="w-12 h-12 mb-4"
-          />
+          /> */}
           <h3 className="text-xl font-semibold mb-2">Secure Payments</h3>
           <p className="text-gray-600 text-center">
             Pay confidently with our secure and reliable payment system.
           </p>
         </div>
         <div className="feature-card bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-          <img
+          {/* <img
             src="/assets/direct-sales.svg"
             alt="Direct Sales"
             className="w-12 h-12 mb-4"
-          />
+          /> */}
           <h3 className="text-xl font-semibold mb-2">Direct Sales</h3>
           <p className="text-gray-600 text-center">
             Buy directly from farmers without any middlemen.
           </p>
         </div>
         <div className="feature-card bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-          <img
+          {/* <img
             src="/assets/quality-animals.svg"
             alt="Quality Animals"
             className="w-12 h-12 mb-4"
-          />
+          /> */}
           <h3 className="text-xl font-semibold mb-2">Quality Animals</h3>
           <p className="text-gray-600 text-center">
             We ensure only healthy and high-quality animals are listed.
@@ -113,7 +114,7 @@ const Home = () => {
           Featured Animals
         </h2>
         <div
-          className={`flex overflow-x-auto space-x-4 transition-all duration-500 ${
+          className={`flex overflow-x-auto space-x-4 transition-all duration-40000 ${
             refreshAnimation
               ? "opacity-100 translate-y-0"
               : "opacity-0 -translate-y-4"
@@ -130,7 +131,7 @@ const Home = () => {
                   alt={animal.name}
                   className="w-full h-32 object-cover rounded-md mb-2"
                 />
-                <h3 className="text-lg font-semibold">{animal.name}</h3>
+                <h2 className="text-lg font-semibold">{animal.name}</h2>
                 <p className="text-gray-700">{animal.description}</p>
                 <button
                   onClick={() => navigate(`/animal/${animal.id}`)}

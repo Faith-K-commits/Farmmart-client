@@ -14,39 +14,16 @@ const AnimalCard = ({ animal }) => {
 
   const handleAddToCart = async () => {
     if (animal.available_quantity === 0) {
-      toast.error("Sorry, this animal is currently out of stock.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error("Sorry, this animal is currently out of stock.");
       return;
     }
 
     try {
-      await addToCart(animal.id, 1);
-      toast.success("Animal added to cart successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      const userId = localStorage.getItem("user_id"); // Assuming user ID is stored in localStorage
+      await addToCart(userId, animal.id, 1);
+      toast.success("Animal added to cart successfully!");
     } catch (error) {
-      toast.error("Failed to add animal to cart.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(`Failed to add animal to cart: ${error.message}`);
     }
   };
 
