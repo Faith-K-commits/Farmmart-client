@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../components/authSlice";
 import { useNavigate } from "react-router-dom";
+import { loginAsync } from "../components/authSlice"; // Redux action for login
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, role } = useSelector((state) => state.auth);
+  const authState = useSelector((state) => state.auth);
+  const { user, token, loading } = authState;
 
   const handleChange = (e) => {
     setFormData({
@@ -16,26 +18,40 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser(formData)).then((result) => {
-      if (result.meta.requestStatus === "fulfilled") {
-        switch (role) {
-          case "vendor":
-            navigate("/vendor/dashboard");
-            break;
-          case "customer":
-            navigate("/customer/dashboard");
-            break;
-          case "admin":
-            navigate("/admin/dashboard");
-            break;
-          default:
-            console.error("Unknown user role");
-        }
-      }
-    });
+    setError(null);
+
+    if (!formData.email || !formData.password) {
+      setError("Email and password are required");
+      return;
+    }
+
+    // Dispatch login action
+    const result = await dispatch(loginAsync(formData));
+    if (loginAsync.rejected.match(result)) {
+      setError(result.payload || "Invalid credentials");
+      return;
+    }
   };
+
+  useEffect(() => {
+    if (!loading && user) {
+      switch (user.role) {
+        case "vendor":
+          navigate("/vendor/dashboard");
+          break;
+        case "customer":
+          navigate("/customer/dashboard");
+          break;
+        case "admin":
+          navigate("/admin/dashboard");
+          break;
+        default:
+          setError("Unknown user role");
+      }
+    }
+  }, [user, loading, navigate]); // Trigger only when user or loading state changes
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -65,12 +81,12 @@ const Login = () => {
           <button
             type="submit"
             className="w-full bg-orange-500 text-white py-2 rounded-lg font-semibold hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
-            disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            Login
           </button>
         </form>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {loading && <p className="text-blue-500 mt-4">Logging in...</p>}
+        {error && <p className="text-red-500 mt-4">{error}</p>}
       </div>
     </div>
   );

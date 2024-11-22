@@ -15,7 +15,7 @@ const UserTable = () => {
     }, [currentPage]);
 
     const fetchUsers = (page = 1) => {
-        fetch(`http://localhost:5000/users?page=${page}&per_page=5`)
+        fetch(`https://farmmart-tvco.onrender.com/users?page=${page}&per_page=5`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch users');
@@ -55,7 +55,7 @@ const UserTable = () => {
     const handleCreateAdmin = (e) => {
         e.preventDefault();
 
-        fetch('http://127.0.0.1:5000/register', {
+        fetch('https://farmmart-tvco.onrender.com/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

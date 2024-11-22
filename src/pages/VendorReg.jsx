@@ -33,7 +33,7 @@ const VendorRegister = () => {
     setLoading(true); // Set loading to true while awaiting the API response
 
     try {
-      const response = await fetch("http://localhost:5000/register", {
+      const response = await fetch("https://farmmart-tvco.onrender.com/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

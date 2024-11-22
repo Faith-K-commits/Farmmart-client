@@ -1,35 +1,28 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom"; // Make sure Navigate is imported
 import { useSelector } from "react-redux";
 
 // Page Components
 import VendorDashboard from "../pages/Vendordashboard";
-import CustomerDashboard from "../pages/Customerdasboard"; // Updated from Home
 import AdminDashboard from "../pages/Admindashboard";
 import AnimalsPage from "../pages/AnimalsPage";
 import Cart from "../pages/CartPage";
-import UserTable from "../pages/Users"; // Updated from Users
+import UserTable from "../pages/Users";
 import Login from "../pages/Login";
 import CustomerRegister from "../pages/CustomerReg";
 import VendorRegister from "../pages/VendorReg";
-import EditProfile from "../pages/EditProfile";
-
-// Role Constants
-const ROLES = {
-  VENDOR: "vendor",
-  CUSTOMER: "customer",
-  ADMIN: "admin",
-};
+import LandingPage from "../pages/LandingPage"; // Landing page
+import CustomerDashboard from "../pages/Customerdasboard";
 
 // Protected Route Component
-const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { token, role } = useSelector((state) => state.auth);
+const ProtectedRoute = ({ children, roles }) => {
+  const auth = useSelector((state) => state.auth);
 
-  if (!token) {
+  if (!auth.token) {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && (!role || !allowedRoles.includes(role))) {
+  if (roles && !roles.includes(auth.user.role)) {
     return <Navigate to="/" replace />;
   }
 
@@ -37,28 +30,21 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 };
 
 const AppRoutes = () => {
+  const auth = useSelector((state) => state.auth);
+
   return (
     <Routes>
       {/* Public Routes */}
+      {!auth.token && <Route path="/" element={<LandingPage />} />}
       <Route path="/login" element={<Login />} />
       <Route path="/signup/customer" element={<CustomerRegister />} />
       <Route path="/signup/vendor" element={<VendorRegister />} />
-
-      {/* Profile Route */}
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <EditProfile />
-          </ProtectedRoute>
-        }
-      />
 
       {/* Protected Routes */}
       <Route
         path="/vendor/dashboard"
         element={
-          <ProtectedRoute allowedRoles={[ROLES.VENDOR]}>
+          <ProtectedRoute roles={["vendor"]}>
             <VendorDashboard />
           </ProtectedRoute>
         }
@@ -66,7 +52,7 @@ const AppRoutes = () => {
       <Route
         path="/customer/dashboard"
         element={
-          <ProtectedRoute allowedRoles={[ROLES.CUSTOMER]}>
+          <ProtectedRoute roles={["customer"]}>
             <CustomerDashboard />
           </ProtectedRoute>
         }
@@ -74,7 +60,7 @@ const AppRoutes = () => {
       <Route
         path="/admin/dashboard"
         element={
-          <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+          <ProtectedRoute roles={["admin"]}>
             <AdminDashboard />
           </ProtectedRoute>
         }
@@ -82,7 +68,7 @@ const AppRoutes = () => {
       <Route
         path="/animals"
         element={
-          <ProtectedRoute allowedRoles={[ROLES.VENDOR, ROLES.CUSTOMER]}>
+          <ProtectedRoute roles={["vendor", "customer"]}>
             <AnimalsPage />
           </ProtectedRoute>
         }
@@ -90,7 +76,7 @@ const AppRoutes = () => {
       <Route
         path="/cart"
         element={
-          <ProtectedRoute allowedRoles={[ROLES.CUSTOMER]}>
+          <ProtectedRoute roles={["customer"]}>
             <Cart />
           </ProtectedRoute>
         }
@@ -98,14 +84,14 @@ const AppRoutes = () => {
       <Route
         path="/users"
         element={
-          <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+          <ProtectedRoute roles={["admin"]}>
             <UserTable />
           </ProtectedRoute>
         }
       />
 
-      {/* Redirect to Login */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      {/* Redirect to default route */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
