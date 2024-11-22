@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import VendorDashboard from "../pages/Vendordashboard";
 import AdminDashboard from "../pages/Admindashboard";
 import AnimalsPage from "../pages/AnimalsPage";
+import AnimalDetailsPage from "../pages/AnimalDetailsPage";
 import Cart from "../pages/CartPage";
 import UserTable from "../pages/Users";
 import Login from "../pages/Login";
@@ -70,6 +71,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute roles={["vendor", "customer"]}>
             <AnimalsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/animal/:id"
+        element={
+          <ProtectedRoute roles={["vendor", "customer"]}>
+            <AnimalDetailsPage />
           </ProtectedRoute>
         }
       />
